@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-import easysnmp
-from easysnmp import *
 import sys, time, math
+from easysnmp import *
+from pip._vendor.requests.sessions import Session
 
 # Parse command-line arguments
 agentIP, agentPort, agentCommunity = sys.argv[1].split(':')
@@ -20,19 +20,16 @@ session_args = {'hostname': agentIP, 'remote_port': agentPort, 'community': agen
 session = Session(**session_args)
 
 #def print_values(value, diff, timer):
-  #  if timer == str(t2):
-            #print(round(value / diff), end="|")
-            
-      #  else:
-            #print(t2, "|", round(value / diff), end="|")
-            
-          #  timer = str(t2)
-   # except:
-       # print(t2, "|", round(value / diff), end="|")
-       
-       # timer = str(t2)
-       
+	#  if timer == str(t2):
+		#print(round(value / diff), end="|")
+	#  else:
+		#print(t2, "|", round(value / diff), end="|")
+		#  timer = str(t2)
+	# except:
+		# print(t2, "|", round(value / diff), end="|")
+		# timer = str(t2)
 #Define function for fetching SNMP values and calculating rates
+
 def sid():
 	global object_1, t1, t2
 	outcome = session.get(objects)
@@ -43,7 +40,7 @@ def sid():
 		if outcome[th].value not in ('NOSUCHOBJECT', 'NOSUCHINSTANCE'):
 			value = outcome[th].value
 			snmp_type = outcome[th].snmp_type
- # if the SNMP data is a counter, calculate the rate of change
+# if the SNMP data is a counter, calculate the rate of change
 			if snmp_type in ('COUNTER64', 'COUNTER32', 'COUNTER'):
 				value = int(value)
 
@@ -65,13 +62,10 @@ def sid():
 											#print(round(oiddiff/(time_diff)),end="|")
 											print(oiddiff/(time_diff),end="|")
 										else:
-											#print(round(t2),"|",round(oiddiff/(time_diff)), end="|");timer=str(t2)
-											print(round(t2),"|",oiddiff/(time_diff), end="|");timer=str(t2)
+											print(round(t2),"|",round(oiddiff/(time_diff)), end="|");timer=str(t2)
 
 									except:
-										#print(round(t2),"|", round(oiddiff/(time_diff)), end= "|");timer=str(t2)
-										print(round(t2),"|", oiddiff/(time_diff), end= "|");timer=str(t2)
-	
+										print(round(t2),"|", round(oiddiff/(time_diff)), end= "|");timer=str(t2)
 
 								elif snmp_type == 'COUNTER64':
 									oiddiff += (2 ** 64)
@@ -79,17 +73,13 @@ def sid():
 									try:
 										if timer==str(t2):
 											#print(oiddiff/(time_diff))
-											#print(round(oiddiff/(time_diff)), end ="|")
-											print(oiddiff/(time_diff), end ="|")
+											print(round(oiddiff/(time_diff)), end ="|")
 										else:
-											#print(t2, "|", round(oiddiff/(time_diff)), end="|");timer=str(t2)
-											print(t2, "|", oiddiff/(time_diff), end="|");timer=str(t2)
+											print(t2, "|", round(oiddiff/(time_diff)), end="|");timer=str(t2)
 
 									except:
 										#print(oiddiff/time_diff)
-										#print(t2,"|",round(oiddiff/(time_diff)),end= "|");timer=str(t2)
-										print(t2,"|",oiddiff/(time_diff),end= "|");timer=str(t2)
-
+										print(t2,"|",round(oiddiff/(time_diff)),end= "|");timer=str(t2)
 								#else:
 									#break
 							else:
@@ -100,33 +90,29 @@ def sid():
 							#print_values(rate, 1, t2)
 							try:
 								if timer==str(t2):
-									#print( round(rate) ,end= "|")
-									print( rate ,end= "|")
+									print( round(rate) ,end= "|")
 									#print("first")
 								else:
-									#print(t2,"|", round(rate), end="|")
-									print(t2,"|", rate, end="|")
+									print(t2,"|", round(rate), end="|")
 									timer=str(t2)
 									#print("second")
 							except:
-								#print(t2 ,"|", round(rate), end="|")
-								print(t2 ,"|", rate, end="|")
+								print(t2 ,"|", round(rate), end="|")
 								timer=str(t2)
-        
 #handle non-responsive SNMP agents 
 					elif outcome[th].snmp_type=='GAUGE':
-						oiddiff = int(obj2[th-1]) - int(obj1[th-1])
+						oiddiff = int(object_2[th-1]) - int(object_1[th-1])
 						#if oiddiff>0: oiddiff="+"+str(oiddiff)
 						try:
 							if timer==str(t2):
-								print(obj2[len(obj2)-1],"(",+oiddiff,")", end="|")
+								print(object_2[len(object_2)-1],"(",+oiddiff,")", end="|")
 								#print("4")
 							else:
-								print(t2,"|",obj2[len(obj2)-1],"(",+oiddiff,")", end="|")
+								print(t2,"|",object_2[len(object_2)-1],"(",+oiddiff,")", end="|")
 								timer=str(t2)
 								#print("5")
 						except:
-							print(t2,"|",obj2[len(obj2)-1],"(",+oiddiff,")", end="|")
+							print(t2,"|",object_2[len(object_2)-1],"(",+oiddiff,")", end="|")
 							timer=str(t2)
 							#print("6")	
 		
@@ -175,7 +161,3 @@ else:
 			n=((ResponseTime-t2)/smplTime)
 			print(n,"n",((n*smplTime)- ResponseTime + t2))
 			time.sleep(((n*smplTime)- ResponseTime + t2))
-   
-   
- 
-  
